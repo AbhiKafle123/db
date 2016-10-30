@@ -48,9 +48,9 @@ places_json = {"id":user_id, "places":places}
 friends_json = {"id":user_id, "friends":friends}
 likes_json = {"id":user_id, "likes":likes}
 # print places[len(places)-1]
-print account_response.json()
+print account_response
 
-results = db.places.insert(places_json)
-friends = db.friends.insert(friends_json)
-likes = db.likes.insert(likes_json)
-user_account = db.users.insert(account_response)
+# results = db.places.insert(places_json)
+# friends = db.friends.insert(friends_json)
+# likes = db.likes.insert(likes_json)
+# user_account = db.users.insert(account_response)
