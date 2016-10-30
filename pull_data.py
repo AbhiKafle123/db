@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#Pulling data from graph api in a single JSON file
+# Pulling data from graph api in a single JSON file
 # Name,ID followed by Likes followed by tagged_places followed by friends
 
 
@@ -43,14 +43,15 @@ user_id = account_response['id']
 # print len(friends)
 # print len(places)
 
-print user_id
+#print user_id
 places_json = {"id":user_id, "places":places}
 friends_json = {"id":user_id, "friends":friends}
 likes_json = {"id":user_id, "likes":likes}
 # print places[len(places)-1]
-print account_response
+#print account_response
+#print places_json
 
-# results = db.places.insert(places_json)
-# friends = db.friends.insert(friends_json)
-# likes = db.likes.insert(likes_json)
-# user_account = db.users.insert(account_response)
+results = db.places.insert(places_json)
+friends = db.friends.insert(friends_json)
+likes = db.likes.insert(likes_json)
+user_account = db.users.insert(account_response)
