@@ -4,7 +4,7 @@ from flask_oauth import OAuth
 import os
 import requests
 import json
-from pymongo import MongoClient
+# from pymongo import MongoClient
 
 
 SECRET_KEY = 'development key'
@@ -48,9 +48,13 @@ def login():
         _external=True))
 
 
+access_token = 0
+
+
 @app.route('/login/authorized')
 @facebook.authorized_handler
 def facebook_authorized(resp):
+    global access_token
     if resp is None:
         return 'Access denied: reason=%s error=%s' % (
             request.args['error_reason'],
@@ -58,6 +62,7 @@ def facebook_authorized(resp):
         )
     session['oauth_token'] = (resp['access_token'], '')
     me = facebook.get('/me')
+    access_token = resp['access_token']
     return 'Logged in as id=%s name=%s redirect=%s session token=%s' % \
         (me.data['id'], me.data['name'], resp['access_token'], request.args.get('next'))
 
@@ -67,11 +72,10 @@ def get_facebook_oauth_token():
     return session.get('oauth_token')
 
 
-client = MongoClient()
-db = client.test
+# client = MongoClient()
+# db = client.test
 
 
-access_token = get_facebook_oauth_token()
 
 def getAllData(response, page = True):
     data = response['data']
@@ -93,27 +97,27 @@ likes_response = requests.get('https://graph.facebook.com/v2.8/me/likes?fields=c
 friends_response = requests.get('https://graph.facebook.com/v2.8/me/friends?fields=name&limit=100&access_token=%s' % (access_token)).json()
 places_response = requests.get('https://graph.facebook.com/v2.8/me/tagged_places?limit=100&access_token=%s' % (access_token)).json()
 
-likes = getAllData(likes_response)
-friends = getAllData(friends_response, False)
-places = getAllData(places_response, False)
+# likes = getAllData(likes_response)
+# friends = getAllData(friends_response, False)
+# places = getAllData(places_response, False)
 
-# print {"id":1, "likes":likes}
-user_id = account_response['id']
-# print len(friends)
-# print len(places)
+# # print {"id":1, "likes":likes}
+# user_id = account_response['id']
+# # print len(friends)
+# # print len(places)
 
-#print user_id
-places_json = {"id":user_id, "places":places}
-friends_json = {"id":user_id, "friends":friends}
-likes_json = {"id":user_id, "likes":likes}
-# print places[len(places)-1]
-#print account_response
-#print places_json
+# #print user_id
+# places_json = {"id":user_id, "places":places}
+# friends_json = {"id":user_id, "friends":friends}
+# likes_json = {"id":user_id, "likes":likes}
+# # print places[len(places)-1]
+# #print account_response
+# #print places_json
 
-results = db.places.insert(places_json)
-friends = db.friends.insert(friends_json)
-likes = db.likes.insert(likes_json)
-user_account = db.users.insert(account_response)
+# results = db.places.insert(places_json)
+# friends = db.friends.insert(friends_json)
+# likes = db.likes.insert(likes_json)
+# user_account = db.users.insert(account_response)
     
 
 
