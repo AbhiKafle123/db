@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+	<title> Practice</title>
+	<script src ="http://d3js.org/d3.v3.min.js"></script>
+	<style type="text/css">
+		
+		circle {
+		  fill: #ccc;
+		  stroke: #333;
+		  stroke-width: 2px;
+		}
+
+		text {
+		  font: 10px sans-serif;
+		  pointer-events: none;
+		  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+		}
+
+	</style>
+</head>
+<body>
+<script type="text/javascript">
+
+var radius = 20;
+
+// console.log(window.innerWidthrHeight);
+
+var width = window.innerWidth, height = window.innerHeight;
+
+// var jsonData1 = 
+// 				{
+// 					id: 30,
+// 					name: "Midusha Shrestha",
+// 					friends: [{
+// 						id: 100,
+// 						name: "MS friend"
+// 					},
+// 					{
+// 						id: 200,
+// 						name: "Common friend"
+// 					}
+// 					]
+// 				}
+// 				;
+
+
+var container = d3.select("body")
+				.append("svg")
+				.attr("width", 7000)
+				.attr("height", height);
+
+
+
+// var rectangle = container.append("rect")
+// 						.attr("x", 0)
+// 						.attr("y", 0)
+// 						.attr("width", window.innerWidth)
+// 						.attr("height", window.innerHeight)
+// 						.style("fill", "black");
+
+d3.json("friends_data.json", function(data) {
+
+
+
+	var jsonData = data.friends.data;
+	// console.log(jsonData);
+
+	var circle = container.selectAll("circle")
+							.data(jsonData)
+							.enter()
+							.append("circle");
+
+	var circleAttributes = circle
+							.attr("cx", function(d, i) { return i*100 + 100;
+								// var x = i*100 + 100; 
+								// 							if (x > width) {return x - 7000;}
+								// 							else
+								// 								return x;
+														})
+							.attr("cy", function(d, i) {
+								return 250;
+								// var x = i*100 + 100;
+								// if (x > width) { return 500; }
+								// else
+								// 	return 250;
+							})
+							.attr("r", radius);
+
+	var mainCircle = container.append("circle")
+						.attr("cx", width/2)
+						.attr("cy", 100)
+						.attr("r", radius * 2);
+
+	var friends_name = container.selectAll("text")
+						.data(jsonData)
+						.enter()
+						.append("text")
+						.attr("x", function(d, i) { return i * 100 + 100 - radius;  })
+						.attr("y", 250 + 2 * radius)
+						.text(function(d) {  return d.name; })
+						;
+
+
+ 	maindata = [data];
+ 	// console.log(data);
+	var name1 = container.selectAll("text")
+						.data(jsonData)
+						.exit()
+						.data(maindata)
+						.append("text")
+						.attr("x", 100)
+						.attr("y", 100)
+						.text(function(d) {  return d.name; })
+						.attr("fill","red")
+						;
+
+
+	// var name = container.append("text")
+	// 					.attr("x", width/2 - radius*2)
+	// 					.attr("y", 100 + radius*2)
+	// 					.text("midsa"); 
+	
+
+	// var mainCircle = circle
+	// 					.exit()
+	// 					.attr("cx", 100)
+	// 					.attr("cy", 50)
+	// 					.attr("r", radius * 2);
+});
+
+// d3.json("friends_data.json", function(data) {
+// 	// console.log(data);
+// 	data = [data];
+// 	var name1 = container
+// 	.selectAll("text")
+// 						.data(data)
+// 						.enter()
+// 						.append("text")
+// 						.attr("x", 100)
+// 						.attr("y", 100)
+// 						.text(function(d) {  return d.name; })
+// 						.attr("fill","red")
+// 						;
+
+// });
+
+
+
+</script>
+
+</body>

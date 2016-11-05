@@ -1,0 +1,118 @@
+{
+  "id": "10205310433110124",
+  "name": "Midusha Shrestha",
+  "friends": {
+    "data": [
+      {
+        "name": "Robik Shrestha",
+        "id": "546472928"
+      },
+      {
+        "name": "Sagun Bhandari",
+        "id": "10152542579936955"
+      },
+      {
+        "name": "Bécram Dhoju",
+        "id": "10152256490986592"
+      },
+      {
+        "name": "Amrita Poddar Bajoria",
+        "id": "730018042"
+      },
+      {
+        "name": "Prabin Kharbuja",
+        "id": "1032096726"
+      },
+      {
+        "name": "Raj Shrestha",
+        "id": "1069781573"
+      },
+      {
+        "name": "Akash Shrestha",
+        "id": "1116338436"
+      },
+      {
+        "name": "Ashish Sharma",
+        "id": "10203202944330996"
+      },
+      {
+        "name": "Santosh Ghimire",
+        "id": "1143814285"
+      },
+      {
+        "name": "Ganesh Pandey",
+        "id": "1337103239"
+      },
+      {
+        "name": "Sushant Kafle",
+        "id": "1349229745"
+      },
+      {
+        "name": "Aayush Shrestha",
+        "id": "10202702408946639"
+      },
+      {
+        "name": "Sudip Kafle",
+        "id": "1409806538"
+      },
+      {
+        "name": "Suraaj Shrestha",
+        "id": "10204388149412258"
+      },
+      {
+        "name": "Prakash Aryal",
+        "id": "10204645610171188"
+      },
+      {
+        "name": "Everest Kc",
+        "id": "1614216686"
+      },
+      {
+        "name": "Sujit Maharjan",
+        "id": "1741776904"
+      },
+      {
+        "name": "Bidhan Bhattarai",
+        "id": "100000029143373"
+      },
+      {
+        "name": "Prabesh Shrestha",
+        "id": "100000092297911"
+      },
+      {
+        "name": "Bikram Basnet",
+        "id": "875177999168007"
+      },
+      {
+        "name": "Sijan Bhandari",
+        "id": "100000494273532"
+      },
+      {
+        "name": "Jiwan Khatiwada",
+        "id": "100000539991708"
+      },
+      {
+        "name": "Roshan Bhandari",
+        "id": "100001185973732"
+      },
+      {
+        "name": "Abhibandu Kafle",
+        "id": "698811410175040"
+      },
+      {
+        "name": "Abhinav Mishra",
+        "id": "826411214139483"
+      }
+    ],
+    "paging": {
+      "cursors": {
+        "before": "QVFIUkFOdnFfNEFhUUtLOFliVWpzS0FDM1Ryc0pyTUMyWGNHS0dtVHpUUmVQeURnSjZAxTVQzMS04d1dMQTBPejdIelQZD",
+        "after": "QVFIUk1YTWxHRVpPay1hQTYzMzJnYzRSMVl6RGN6czl3S1Nwb0pYaXFGdGprNzJBWnFSdUtEZAkhOM1BfQTI3NEJXWjlwVm51dkNmUFN5eHU5LS1JbVZA1ejlB"
+      },
+      "next": "https://graph.facebook.com/v2.8/10205310433110124/friends?access_token=EAACEdEose0cBALmoY48tZBz4zKFw6OCQu7AdvXa4GNjQTZAQXyog05RvE5jmmGkFJKE9BZAVdpyT6xIJKj7HJlTakGu9s3w8NcIT4olIg3wxfo8GE6MP5NZALyWK0tKS1QZAUtzY4sCdCC8eiAeJIx6h9AT2ZCYkvkRIFy38CIagT0HDZCy02oI6kQaPqqwJLRhCFGlXjHa0gZDZD&pretty=0&limit=25&after=QVFIUk1YTWxHRVpPay1hQTYzMzJnYzRSMVl6RGN6czl3S1Nwb0pYaXFGdGprNzJBWnFSdUtEZAkhOM1BfQTI3NEJXWjlwVm51dkNmUFN5eHU5LS1JbVZA1ejlB"
+    },
+    "summary": {
+      "total_count": 553
+    }
+  }
+}
