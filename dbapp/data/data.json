@@ -1,7 +1,7 @@
 {
-	"name": "Pages",
-	"Category": [
-	{
+	"name": "Commonalites",
+	"children": [
+		{
 		"name": "Book",
 		"children": [
 		{"name": "Harry Potter"},
@@ -15,6 +15,38 @@
 			"children": [
 			{"name": "Inception"},
 			{"name": "Crazy Stupid Love"}
+			]
+		},
+		{
+		"name": "Restaurants",
+		"children": [
+		{"name": "Viet Hung"},
+		{"name": "Mc Donalds"},
+		{"name": "Subway"}
+		]
+		},
+
+		{
+			"name": "Places Visited",
+			"children": [
+			{"name": "Pokhara"},
+			{"name": "Kathmandu"}
+			]
+		},
+		{
+		"name": "Friends",
+		"children": [
+		{"name": "Midusha"},
+		{"name": "Bidhan"},
+		{"name": "Abhibandu Kafle"}
+		]
+		},
+
+		{
+			"name": "Others",
+			"children": [
+			{"name": "I like food"},
+			{"name": "Welcome to my Life"}
 			]
 		}
 		]
