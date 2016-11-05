@@ -1,6 +1,4 @@
 from flask import Flask, render_template, json, request
-# from flask.ext.mysql import MySQL 
-from werkzeug import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
@@ -22,15 +20,15 @@ def getJsonData():
 
 @app.route("/")
 def main():
-	jsondata = getJsonData()
-	print (type(jsondata))
-	return render_template('graph.html', mydata = jsondata)
+	# jsondata = getJsonData()
+	# print (type(jsondata))
+	return render_template("login.html",template_folder='templates')
 
-@app.route('/showSignUp')
+@app.route('/signup')
 def showSignUp():
-	return render_template('signup.html')
+	return render_template('index.html')
 
-@app.route('/signUp', methods=['POST'])
+@app.route('/ShowsignUp', methods=['POST'])
 def signUp():
 	# read the posted values from the UI
 	_name = request.form['inputName']
