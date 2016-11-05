@@ -1,6 +1,10 @@
 #! /usr/bin/python
 from flask import Flask, redirect, url_for, session, request, render_template
 from flask_oauth import OAuth
+import os
+import requests
+import json
+from pymongo import MongoClient
 
 
 SECRET_KEY = 'development key'
@@ -24,11 +28,12 @@ facebook = oauth.remote_app('facebook',
     request_token_params={'scope': 'user_friends, user_likes, user_location, user_tagged_places, user_photos'}
 )
 
+
 @app.route("/")
 def main():
-	# jsondata = getJsonData()
-	# print (type(jsondata))
-	return render_template("login.html",template_folder='templates')
+    # jsondata = getJsonData()
+    # print (type(jsondata))
+    return render_template("login.html",template_folder='templates')
 
 
 @app.route('/signup')
@@ -60,8 +65,57 @@ def facebook_authorized(resp):
 @facebook.tokengetter
 def get_facebook_oauth_token():
     return session.get('oauth_token')
-    print session.get('oauth_token')
+
+
+client = MongoClient()
+db = client.test
+
+
+access_token = get_facebook_oauth_token()
+
+def getAllData(response, page = True):
+    data = response['data']
+    count = 0
+    while ('paging' in response) and page:
+        print count
+        count += 1
+        nexturl = response['paging']['next']
+        response = requests.get(nexturl).json()
+        data.extend(response['data'])
+    print len(data)
+    return data
+
+
+# response = os.system('wget "https://graph.facebook.com/v2.8/me?fields=id,name,likes{category,name,fan_count},friends,tagged_places&access_token=%s" -O all3.json'%(access_token) )
+#response = requests.get('https://graph.facebook.com/v2.8/me?fields=id,name,likes{category,name,fan_count},friends,tagged_places&access_token=%s' % (access_token))
+account_response = requests.get('https://graph.facebook.com/v2.8/me/?access_token=%s' % (access_token)).json()
+likes_response = requests.get('https://graph.facebook.com/v2.8/me/likes?fields=category,name&limit=100&access_token=%s' % (access_token)).json()
+friends_response = requests.get('https://graph.facebook.com/v2.8/me/friends?fields=name&limit=100&access_token=%s' % (access_token)).json()
+places_response = requests.get('https://graph.facebook.com/v2.8/me/tagged_places?limit=100&access_token=%s' % (access_token)).json()
+
+likes = getAllData(likes_response)
+friends = getAllData(friends_response, False)
+places = getAllData(places_response, False)
+
+# print {"id":1, "likes":likes}
+user_id = account_response['id']
+# print len(friends)
+# print len(places)
+
+#print user_id
+places_json = {"id":user_id, "places":places}
+friends_json = {"id":user_id, "friends":friends}
+likes_json = {"id":user_id, "likes":likes}
+# print places[len(places)-1]
+#print account_response
+#print places_json
+
+results = db.places.insert(places_json)
+friends = db.friends.insert(friends_json)
+likes = db.likes.insert(likes_json)
+user_account = db.users.insert(account_response)
+    
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')
