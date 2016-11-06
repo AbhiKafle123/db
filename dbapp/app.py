@@ -124,9 +124,12 @@ def getResponse():
     # print len(places)
 
     #print user_id
-    global places_json = {"id":user_id, "places":places}
-    global friends_json = {"id":user_id, "friends":friends}
-    global likes_json = {"id":user_id, "likes":likes}
+    global places_json 
+    places_json = {"id":user_id, "places":places}
+    global friends_json 
+    friends_json = {"id":user_id, "friends":friends}
+    global likes_json
+    likes_json = {"id":user_id, "likes":likes}
     insertintodb()
 # print places[len(places)-1]
 #print account_response
