@@ -4,7 +4,7 @@ from flask_oauth import OAuth
 import os
 import requests
 import json
-from pymongo import MongoClient
+# from pymongo import MongoClient
 
 
 SECRET_KEY = 'development key'
@@ -62,18 +62,28 @@ def facebook_authorized(resp):
         )
     session['oauth_token'] = (resp['access_token'], '')
     me = facebook.get('/me')
-    access_token = resp['access_token']
+    # print resp
+    access_token = str(resp['access_token'])
+    print "\nInside"
+    print access_token
+    print "\n"
+
+    print "\n"
+    print type(access_token)
+    print "\n"
     return 'Logged in as id=%s name=%s redirect=%s session token=%s' % \
         (me.data['id'], me.data['name'], resp['access_token'], request.args.get('next'))
 
 
+
+# access_token = "EAAXpeuVhRw8BAEAfliZAaIsi9dyU5nQFjAQkAFE4PJGkph8edAJ0D9oWAKSuwRL3vo5b6kZBHVnnr0aJ9iXRPSBv9XtwEeoZCVVCcf1aGX6ohyp1VMrLlReb9JnmhHuapZCUcZAqoAKeXSXtMWhNygKLsrGcORUrNqBO1m304PAZDZD"
 @facebook.tokengetter
 def get_facebook_oauth_token():
     return session.get('oauth_token')
 
 
-client = MongoClient()
-db = client.test
+# client = MongoClient()
+# db = client.test
 
 
 
@@ -89,35 +99,36 @@ def getAllData(response, page = True):
     print len(data)
     return data
 
+def getResponse():
+    response = os.system('wget "https://graph.facebook.com/v2.8/me?fields=id,name,likes{category,name,fan_count},friends,tagged_places&access_token=%s" -O all3.json'%(access_token) )
+    response = requests.get('https://graph.facebook.com/v2.8/me?fields=id,name,likes{category,name,fan_count},friends,tagged_places&access_token=%s' % (access_token))
+    account_response = requests.get('https://graph.facebook.com/v2.8/me/?access_token=%s' % (access_token)).json()
+    likes_response = requests.get('https://graph.facebook.com/v2.8/me/likes?fields=category,name&limit=100&access_token=%s' % (access_token)).json()
+    friends_response = requests.get('https://graph.facebook.com/v2.8/me/friends?fields=name&limit=100&access_token=%s' % (access_token)).json()
+    places_response = requests.get('https://graph.facebook.com/v2.8/me/tagged_places?limit=100&access_token=%s' % (access_token)).json()
 
-# response = os.system('wget "https://graph.facebook.com/v2.8/me?fields=id,name,likes{category,name,fan_count},friends,tagged_places&access_token=%s" -O all3.json'%(access_token) )
-#response = requests.get('https://graph.facebook.com/v2.8/me?fields=id,name,likes{category,name,fan_count},friends,tagged_places&access_token=%s' % (access_token))
-account_response = requests.get('https://graph.facebook.com/v2.8/me/?access_token=%s' % (access_token)).json()
-likes_response = requests.get('https://graph.facebook.com/v2.8/me/likes?fields=category,name&limit=100&access_token=%s' % (access_token)).json()
-friends_response = requests.get('https://graph.facebook.com/v2.8/me/friends?fields=name&limit=100&access_token=%s' % (access_token)).json()
-places_response = requests.get('https://graph.facebook.com/v2.8/me/tagged_places?limit=100&access_token=%s' % (access_token)).json()
+    likes = getAllData(likes_response)
+    friends = getAllData(friends_response, False)
+    places = getAllData(places_response, False)
 
-likes = getAllData(likes_response)
-friends = getAllData(friends_response, False)
-places = getAllData(places_response, False)
+    # print {"id":1, "likes":likes}
+    user_id = account_response['id']
+    # print len(friends)
+    # print len(places)
 
-# print {"id":1, "likes":likes}
-user_id = account_response['id']
-# print len(friends)
-# print len(places)
-
-#print user_id
-places_json = {"id":user_id, "places":places}
-friends_json = {"id":user_id, "friends":friends}
-likes_json = {"id":user_id, "likes":likes}
+    #print user_id
+    places_json = {"id":user_id, "places":places}
+    friends_json = {"id":user_id, "friends":friends}
+    likes_json = {"id":user_id, "likes":likes}
 # print places[len(places)-1]
 #print account_response
 #print places_json
 
-results = db.places.insert(places_json)
-friends = db.friends.insert(friends_json)
-likes = db.likes.insert(likes_json)
-user_account = db.users.insert(account_response)
+def insertintodb():
+    results = db.places.insert(places_json)
+    friends = db.friends.insert(friends_json)
+    likes = db.likes.insert(likes_json)
+    user_account = db.users.insert(account_response)
     
 
 
