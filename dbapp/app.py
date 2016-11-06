@@ -97,9 +97,12 @@ def getAllData(response, page = True):
     while ('paging' in response) and page:
         print count
         count += 1
-        nexturl = response['paging']['next']
-        response = requests.get(nexturl).json()
-        data.extend(response['data'])
+	if 'next' in response['paging']:
+        	nexturl = response['paging']['next']
+        	response = requests.get(nexturl).json()
+        	data.extend(response['data'])
+    	else:
+		break
     print len(data)
     return data
 
