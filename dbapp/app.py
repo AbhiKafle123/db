@@ -18,6 +18,17 @@ app.debug = DEBUG
 app.secret_key = SECRET_KEY
 oauth = OAuth()
 
+# Database connection
+client = MongoClient()
+db = client.test
+
+
+places_json = 0
+likes_json = 0
+friends_json = 0
+access_token = 0
+
+
 facebook = oauth.remote_app('facebook',
     base_url='https://graph.facebook.com/',
     request_token_url=None,
@@ -48,8 +59,6 @@ def login():
         _external=True))
 
 
-access_token = 0
-
 
 @app.route('/login/authorized')
 @facebook.authorized_handler
@@ -62,40 +71,23 @@ def facebook_authorized(resp):
         )
     session['oauth_token'] = (resp['access_token'], '')
     me = facebook.get('/me')
-    # print resp
     access_token = str(resp['access_token'])
-    print "\nInside"
-    print access_token
-    print "\n"
-
-    print "\n"
-    print type(access_token)
-    print "\n"
     getResponse()
     return 'Logged in as id=%s name=%s redirect=%s session token=%s' % \
         (me.data['id'], me.data['name'], resp['access_token'], request.args.get('next'))
 
 
 
-# access_token = "EAAXpeuVhRw8BAEAfliZAaIsi9dyU5nQFjAQkAFE4PJGkph8edAJ0D9oWAKSuwRL3vo5b6kZBHVnnr0aJ9iXRPSBv9XtwEeoZCVVCcf1aGX6ohyp1VMrLlReb9JnmhHuapZCUcZAqoAKeXSXtMWhNygKLsrGcORUrNqBO1m304PAZDZD"
 @facebook.tokengetter
 def get_facebook_oauth_token():
     return session.get('oauth_token')
 
-
-client = MongoClient()
-db = client.test
-
-places_json = 0
-likes_json = 0
-friends_json =0
 
 
 def getAllData(response, page = True):
     data = response['data']
     count = 0
     while ('paging' in response) and page:
-        print count
         count += 1
 	if 'next' in response['paging']:
         	nexturl = response['paging']['next']
@@ -103,15 +95,12 @@ def getAllData(response, page = True):
         	data.extend(response['data'])
     	else:
 		break
-    print len(data)
     return data
 
 def getResponse():
-    print "\nOutsideside"
-    print access_token
-    print "\n"
     response = os.system('wget "https://graph.facebook.com/v2.8/me?fields=id,name,likes{category,name,fan_count},friends,tagged_places&access_token=%s" -O all3.json'%(access_token) )
     response = requests.get('https://graph.facebook.com/v2.8/me?fields=id,name,likes{category,name,fan_count},friends,tagged_places&access_token=%s' % (access_token))
+    
     global account_response
     account_response = requests.get('https://graph.facebook.com/v2.8/me/?access_token=%s' % (access_token)).json()
     likes_response = requests.get('https://graph.facebook.com/v2.8/me/likes?fields=category,name&limit=100&access_token=%s' % (access_token)).json()
@@ -121,13 +110,8 @@ def getResponse():
     likes = getAllData(likes_response)
     friends = getAllData(friends_response, False)
     places = getAllData(places_response, False)
-
-    # print {"id":1, "likes":likes}
     user_id = account_response['id']
-    # print len(friends)
-    # print len(places)
 
-    #print user_id
     global places_json 
     places_json = {"id":user_id, "places":places}
     global friends_json 
@@ -135,9 +119,7 @@ def getResponse():
     global likes_json
     likes_json = {"id":user_id, "likes":likes}
     insertintodb()
-# print places[len(places)-1]
-#print account_response
-#print places_json
+
 
 def insertintodb():
     results = db.places.insert(places_json)
@@ -145,7 +127,6 @@ def insertintodb():
     likes = db.likes.insert(likes_json)
     user_account = db.users.insert(account_response)
     
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
