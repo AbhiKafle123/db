@@ -19,6 +19,11 @@
 		  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
 		}
 
+		.button rect {
+		  stroke: #1f628d;
+		  stroke-width: 2px;
+		}
+
 	</style>
 </head>
 <body>
@@ -30,7 +35,8 @@ var radius = 20;
 
 var width = window.innerWidth, height = window.innerHeight;
 
-// var jsonData1 = 
+var iterator = 0;
+// var slicedData1 = 
 // 				{
 // 					id: 30,
 // 					name: "Midusha Shrestha",
@@ -53,102 +59,127 @@ var container = d3.select("body")
 				.attr("height", height);
 
 
-
-// var rectangle = container.append("rect")
-// 						.attr("x", 0)
-// 						.attr("y", 0)
-// 						.attr("width", window.innerWidth)
-// 						.attr("height", window.innerHeight)
-// 						.style("fill", "black");
-
 d3.json("friends_data.json", function(data) {
 
 
-
 	var jsonData = data.friends.data;
-	// console.log(jsonData);
+	// console.log(slicedData);
 
-	var circle = container.selectAll("circle")
-							.data(jsonData)
+	function show_friends(slicedData) {
+		var circle = container.selectAll("circle")
+								.data(slicedData)
+								.enter()
+								.append("circle");
+
+		var circleAttributes = circle
+								.attr("cx", function(d, i) { return i*150 + 100;
+									// var x = i*100 + 100; 
+									// 							if (x > width) {return x - 7000;}
+									// 							else
+									// 								return x;
+															})
+								.attr("cy", function(d, i) {
+									return 250;
+									// var x = i*100 + 100;
+									// if (x > width) { return 500; }
+									// else
+									// 	return 250;
+								})
+								.attr("r", radius);
+
+
+		var friends_name = container.selectAll("text")
+							.data(slicedData)
 							.enter()
-							.append("circle");
+							.append("text")
+							.attr("x", function(d, i) { return i * 150 + 100;  })
+							.attr("y", 250 + radius + 15)
+							.text(function(d) {  return d.name; })
+							.attr("text-anchor", "middle")
+							;
 
-	var circleAttributes = circle
-							.attr("cx", function(d, i) { return i*100 + 100;
-								// var x = i*100 + 100; 
-								// 							if (x > width) {return x - 7000;}
-								// 							else
-								// 								return x;
-														})
-							.attr("cy", function(d, i) {
-								return 250;
-								// var x = i*100 + 100;
-								// if (x > width) { return 500; }
-								// else
-								// 	return 250;
-							})
-							.attr("r", radius);
+		var name = container.append("text")
+						.attr("x", width/2)
+						.attr("y", 100 + radius*2 + 15)
+						.text(data.name)
+						.attr("fill","red")
+						.attr("text-anchor", "middle")
+						;
 
-	var mainCircle = container.append("circle")
+		var mainCircle = container.append("circle")
 						.attr("cx", width/2)
 						.attr("cy", 100)
 						.attr("r", radius * 2);
 
-	var friends_name = container.selectAll("text")
-						.data(jsonData)
-						.enter()
-						.append("text")
-						.attr("x", function(d, i) { return i * 100 + 100 - radius;  })
-						.attr("y", 250 + 2 * radius)
-						.text(function(d) {  return d.name; })
-						;
 
+	}
 
- 	maindata = [data];
- 	// console.log(data);
-	var name1 = container.selectAll("text")
-						.data(jsonData)
-						.exit()
-						.data(maindata)
-						.append("text")
-						.attr("x", 100)
-						.attr("y", 100)
-						.text(function(d) {  return d.name; })
-						.attr("fill","red")
-						;
-
-
-	// var name = container.append("text")
-	// 					.attr("x", width/2 - radius*2)
-	// 					.attr("y", 100 + radius*2)
-	// 					.text("midsa"); 
 	
 
-	// var mainCircle = circle
-	// 					.exit()
-	// 					.attr("cx", 100)
-	// 					.attr("cy", 50)
-	// 					.attr("r", radius * 2);
+	var iterations = Math.ceil(jsonData.length / 8);
+	// var iterations = Math.ceil(4 / 8);
+	// for (var i = 0; i < 2; i++) {
+
+	slicedData = jsonData.slice(iterator * 8, (iterator+1) *8);
+		
+	// 	// console.log(slicedData);
+
+	// 	// svg.selectAll("*").remove();
+	// 	d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
+		show_friends(slicedData);	
+	// }
+
+	window.nextClicked = function (){
+		
+		console.log(iterator);
+		if (iterator < iterations) {
+			// nxtBtn.disabled = true;
+			iterator++;
+			console.log("2 clicked");
+			// nxtBtn.disabled = false;	
+			slicedData = jsonData.slice(iterator * 8, (iterator + 1) * 8);
+			d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
+			show_friends(slicedData);
+			// iterator++;
+			document.getElementById("nxtBtn").style.display="block";
+			document.getElementById("prvBtn").style.display="block";
+		}
+		else {
+			document.getElementById("nxtBtn").style.display="none";
+			document.getElementById("prvBtn").style.display="block";
+			
+		}
+	}
+
+	window.prevClicked = function (){
+		
+		console.log(iterator);
+		if (iterator >= 0) {
+			// nxtBtn.disabled = true;
+			iterator--;
+			console.log("2 clicked");
+			// nxtBtn.disabled = false;	
+			slicedData = jsonData.slice(iterator * 8, (iterator + 1) * 8);
+			d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
+			show_friends(slicedData);
+			// iterator++;
+			document.getElementById("prvBtn").style.display="block";
+			document.getElementById("nxtBtn").style.display="block";
+		}
+		else {
+			document.getElementById("prvBtn").style.display="none";
+			document.getElementById("nxtBtn").style.display="block";
+			
+		}
+	}
+	
+
 });
-
-// d3.json("friends_data.json", function(data) {
-// 	// console.log(data);
-// 	data = [data];
-// 	var name1 = container
-// 	.selectAll("text")
-// 						.data(data)
-// 						.enter()
-// 						.append("text")
-// 						.attr("x", 100)
-// 						.attr("y", 100)
-// 						.text(function(d) {  return d.name; })
-// 						.attr("fill","red")
-// 						;
-
-// });
-
 
 
 </script>
 
+ 
+  <button id = "prvBtn" onclick="prevClicked()">Previous</button>
+  <button id = "nxtBtn" onclick="nextClicked()">Next</button>
 </body>
