@@ -4,7 +4,7 @@ from flask_oauth import OAuth
 import os
 import requests
 import json
-# from pymongo import MongoClient
+from pymongo import MongoClient
 
 
 SECRET_KEY = 'development key'
