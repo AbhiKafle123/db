@@ -86,6 +86,9 @@ def get_facebook_oauth_token():
 client = MongoClient()
 db = client.test
 
+places_json = 0
+likes_json = 0
+friends_json =0
 
 
 def getAllData(response, page = True):
@@ -121,9 +124,9 @@ def getResponse():
     # print len(places)
 
     #print user_id
-    places_json = {"id":user_id, "places":places}
-    friends_json = {"id":user_id, "friends":friends}
-    likes_json = {"id":user_id, "likes":likes}
+    global places_json = {"id":user_id, "places":places}
+    global friends_json = {"id":user_id, "friends":friends}
+    global likes_json = {"id":user_id, "likes":likes}
     insertintodb()
 # print places[len(places)-1]
 #print account_response
