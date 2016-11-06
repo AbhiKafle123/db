@@ -83,8 +83,8 @@ def get_facebook_oauth_token():
     return session.get('oauth_token')
 
 
-# client = MongoClient()
-# db = client.test
+client = MongoClient()
+db = client.test
 
 
 
