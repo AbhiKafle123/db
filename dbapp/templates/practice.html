@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+	<title> Practice</title>
+	<script src ="http://d3js.org/d3.v3.min.js"></script>
+	<style type="text/css">
+		
+		circle {
+		  fill: #ccc;
+		  stroke: #333;
+		  stroke-width: 2px;
+		}
+
+		text {
+		  font: 10px sans-serif;
+		  pointer-events: none;
+		  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+		}
+
+		.button rect {
+		  stroke: #1f628d;
+		  stroke-width: 2px;
+		}
+
+	</style>
+</head>
+<body>
+<script type="text/javascript">
+
+var radius = 20;
+
+// console.log(window.innerWidthrHeight);
+
+var width = window.innerWidth, height = window.innerHeight;
+
+var iterator = 0;
+// var slicedData1 = 
+// 				{
+	{{mydata}}
+// 					id: 30,
+// 					name: "Midusha Shrestha",
+// 					friends: [{
+// 						id: 100,
+// 						name: "MS friend"
+// 					},
+// 					{
+// 						id: 200,
+// 						name: "Common friend"
+// 					}
+// 					]
+// 				}
+// 				;
+
+
+var container = d3.select("body")
+				.append("svg")
+				.attr("width", 7000)
+				.attr("height", height);
+
+
+d3.json("friends_data.json", function(data) {
+
+
+	var jsonData = data.friends.data;
+	// console.log(slicedData);
+
+	function show_friends(slicedData) {
+		var circle = container.selectAll("circle")
+								.data(slicedData)
+								.enter()
+								.append("circle");
+
+		var circleAttributes = circle
+								.attr("cx", function(d, i) { return i*150 + 100;
+									// var x = i*100 + 100; 
+									// 							if (x > width) {return x - 7000;}
+									// 							else
+									// 								return x;
+															})
+								.attr("cy", function(d, i) {
+									return 250;
+									// var x = i*100 + 100;
+									// if (x > width) { return 500; }
+									// else
+									// 	return 250;
+								})
+								.attr("r", radius);
+
+
+		var friends_name = container.selectAll("text")
+							.data(slicedData)
+							.enter()
+							.append("text")
+							.attr("x", function(d, i) { return i * 150 + 100;  })
+							.attr("y", 250 + radius + 15)
+							.text(function(d) {  return d.name; })
+							.attr("text-anchor", "middle")
+							;
+
+		var name = container.append("text")
+						.attr("x", width/2)
+						.attr("y", 100 + radius*2 + 15)
+						.text(data.name)
+						.attr("fill","red")
+						.attr("text-anchor", "middle")
+						;
+
+		var mainCircle = container.append("circle")
+						.attr("cx", width/2)
+						.attr("cy", 100)
+						.attr("r", radius * 2);
+
+
+	}
+
+	
+
+	var iterations = Math.ceil(jsonData.length / 8);
+	// var iterations = Math.ceil(4 / 8);
+	// for (var i = 0; i < 2; i++) {
+
+	slicedData = jsonData.slice(iterator * 8, (iterator+1) *8);
+		
+	// 	// console.log(slicedData);
+
+	// 	// svg.selectAll("*").remove();
+	// 	d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
+		show_friends(slicedData);	
+	// }
+
+	window.nextClicked = function (){
+		
+		console.log(iterator);
+		if (iterator < iterations) {
+			// nxtBtn.disabled = true;
+			iterator++;
+			console.log("2 clicked");
+			// nxtBtn.disabled = false;	
+			slicedData = jsonData.slice(iterator * 8, (iterator + 1) * 8);
+			d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
+			show_friends(slicedData);
+			// iterator++;
+			document.getElementById("nxtBtn").style.display="block";
+			document.getElementById("prvBtn").style.display="block";
+		}
+		else {
+			document.getElementById("nxtBtn").style.display="none";
+			document.getElementById("prvBtn").style.display="block";
+			
+		}
+	}
+
+	window.prevClicked = function (){
+		
+		console.log(iterator);
+		if (iterator >= 0) {
+			// nxtBtn.disabled = true;
+			iterator--;
+			console.log("2 clicked");
+			// nxtBtn.disabled = false;	
+			slicedData = jsonData.slice(iterator * 8, (iterator + 1) * 8);
+			d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
+			show_friends(slicedData);
+			// iterator++;
+			document.getElementById("prvBtn").style.display="block";
+			document.getElementById("nxtBtn").style.display="block";
+		}
+		else {
+			document.getElementById("prvBtn").style.display="none";
+			document.getElementById("nxtBtn").style.display="block";
+			
+		}
+	}
+	
+
+});
+
+
+</script>
+
+ 
+  <button id = "prvBtn" onclick="prevClicked()">Previous</button>
+  <button id = "nxtBtn" onclick="nextClicked()">Next</button>
+</body>
