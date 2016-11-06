@@ -122,10 +122,13 @@ def getResponse():
 
 
 def insertintodb():
-    results = db.places.insert(places_json)
-    friends = db.friends.insert(friends_json)
-    likes = db.likes.insert(likes_json)
-    user_account = db.users.insert("_id" : {account_response['id']},"name" : {account_response['name']})
+    try:
+        results = db.places.insert(places_json)
+        friends = db.friends.insert(friends_json)
+        likes = db.likes.insert(likes_json)
+        user_account = db.users.insert({"_id" : account_response['id'],"name" : account_response['name']})
+    except:
+        pass
     
 
 if __name__ == '__main__':
