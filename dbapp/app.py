@@ -71,6 +71,7 @@ def facebook_authorized(resp):
     print "\n"
     print type(access_token)
     print "\n"
+    getResponse()
     return 'Logged in as id=%s name=%s redirect=%s session token=%s' % \
         (me.data['id'], me.data['name'], resp['access_token'], request.args.get('next'))
 
@@ -100,6 +101,9 @@ def getAllData(response, page = True):
     return data
 
 def getResponse():
+    print "\nOutsideside"
+    print access_token
+    print "\n"
     response = os.system('wget "https://graph.facebook.com/v2.8/me?fields=id,name,likes{category,name,fan_count},friends,tagged_places&access_token=%s" -O all3.json'%(access_token) )
     response = requests.get('https://graph.facebook.com/v2.8/me?fields=id,name,likes{category,name,fan_count},friends,tagged_places&access_token=%s' % (access_token))
     account_response = requests.get('https://graph.facebook.com/v2.8/me/?access_token=%s' % (access_token)).json()
@@ -120,6 +124,7 @@ def getResponse():
     places_json = {"id":user_id, "places":places}
     friends_json = {"id":user_id, "friends":friends}
     likes_json = {"id":user_id, "likes":likes}
+    insertintodb()
 # print places[len(places)-1]
 #print account_response
 #print places_json
