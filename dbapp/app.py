@@ -113,11 +113,11 @@ def getResponse():
     user_id = account_response['id']
 
     global places_json 
-    places_json = {"id":user_id, "places":places}
+    places_json = {"_id":user_id, "places":places}
     global friends_json 
-    friends_json = {"id":user_id, "friends":friends}
+    friends_json = {"_id":user_id, "friends":friends}
     global likes_json
-    likes_json = {"id":user_id, "likes":likes}
+    likes_json = {"_id":user_id, "likes":likes}
     insertintodb()
 
 
@@ -125,7 +125,7 @@ def insertintodb():
     results = db.places.insert(places_json)
     friends = db.friends.insert(friends_json)
     likes = db.likes.insert(likes_json)
-    user_account = db.users.insert(account_response)
+    user_account = db.users.insert("_id" : {account_response['id']},"name" : {account_response['name']})
     
 
 if __name__ == '__main__':
