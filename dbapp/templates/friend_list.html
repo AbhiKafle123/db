@@ -60,13 +60,13 @@ d3.json("friends_data.json", function(data) {
 		var circles = userContainer.append("circle")
 								.attr("cx", function(d, i) { return i*150 + 100;
 															})
-								.attr("cy", 250)
+								.attr("cy", 400)
 								.attr("r", radius)
 								;
 
 		var friends_name = userContainer.append("text")
 							.attr("x", function(d, i) { return i * 150 + 100;  })
-							.attr("y", 250 + radius + 15)
+							.attr("y", 400 + radius + 15)
 							.text(function(d) {  return d.name; })
 							.attr("text-anchor", "middle")
 							;
@@ -91,7 +91,7 @@ d3.json("friends_data.json", function(data) {
 
 		var nextBtn = nextButtonGroup.append("rect")
 						.attr("x", width - 80)
-						.attr("y", 250)
+						.attr("y", 400)
 						.attr("width", 40)
 						.attr("height", 20)
 						// .attr("fill", "blue")
@@ -106,13 +106,13 @@ d3.json("friends_data.json", function(data) {
 							.attr("id", "nxtLabel")
 							.attr("text-anchor", "middle")
 							.attr("x", width - 80 + 20)
-							.attr("y", 265);
+							.attr("y", 400 + 15);
 
 		var prevButtonGroup = container.append("g");
 
 		var prevBtn = prevButtonGroup.append("rect")
 						.attr("x", 5)
-						.attr("y", 250)
+						.attr("y", 400)
 						.attr("width", 40)
 						.attr("height", 20)
 						.attr("id","prvBtn")
@@ -126,7 +126,7 @@ d3.json("friends_data.json", function(data) {
 							.attr("id", "prvLabel")
 							.attr("text-anchor", "middle")
 							.attr("x", 25)
-							.attr("y", 265);
+							.attr("y", 400 + 15);
 
 	}
 
@@ -134,59 +134,60 @@ d3.json("friends_data.json", function(data) {
 
 	var iterations = Math.ceil(jsonData.length / 8);
 	// var iterations = Math.ceil(4 / 8);
-
 	slicedData = jsonData.slice(iterator * 8, (iterator+1) *8);
 		
 	show_friends(slicedData);	
 
+	if (iterator == 0) {
+		document.getElementById("prvBtn").style.display="none";
+		document.getElementById("prvLabel").style.display="none";
+	}
+	if (iterator == iterations - 1) {
+		document.getElementById("nxtBtn").style.display="none";
+		document.getElementById("nxtLabel").style.display="none";
+	}
+
 	window.nextClicked = function (){
-		
+		iterator++;
 		console.log(iterator);
-		if (iterator < iterations) {
-			// nxtBtn.disabled = true;
-			iterator++;
-			console.log("2 clicked");
-			// nxtBtn.disabled = false;	
-			slicedData = jsonData.slice(iterator * 8, (iterator + 1) * 8);
-			d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
-			show_friends(slicedData);
-			// iterator++;
-			document.getElementById("nxtBtn").style.display="block";
-			document.getElementById("nxtLabel").style.display="block";
+		console.log("2 clicked");
+		slicedData = jsonData.slice(iterator * 8, (iterator + 1) * 8);
+		d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
+		show_friends(slicedData);
+
+		if (iterator == iterations - 1) { // no more data, reached end
+			document.getElementById("nxtBtn").style.display="none";
+			document.getElementById("nxtLabel").style.display="none";
 			document.getElementById("prvBtn").style.display="block";
 			document.getElementById("prvLabel").style.display="block";
 		}
 		else {
-			document.getElementById("nxtBtn").style.display="none";
-			document.getElementById("nxtLabel").style.display="none";
+			document.getElementById("nxtBtn").style.display="block";
+			document.getElementById("nxtLabel").style.display="block";
 			document.getElementById("prvBtn").style.display="block";
 			document.getElementById("prvLabel").style.display="block";
 		}
 	}
 
 	window.prevClicked = function (){
-		
+		iterator--;
+		console.log("2 clicked");
+		slicedData = jsonData.slice(iterator * 8, (iterator + 1) * 8);
+		d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
+		show_friends(slicedData);
 		console.log(iterator);
-		if (iterator >= 0) {
-			// nxtBtn.disabled = true;
-			iterator--;
-			console.log("2 clicked");
-			// nxtBtn.disabled = false;	
-			slicedData = jsonData.slice(iterator * 8, (iterator + 1) * 8);
-			d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
-			show_friends(slicedData);
-			// iterator++;
-			document.getElementById("nxtBtn").style.display="block";
-			document.getElementById("nxtLabel").style.display="block";
-			document.getElementById("prvBtn").style.display="block";
-			document.getElementById("prvLabel").style.display="block";
-		}
-		else {
+
+		if (iterator == 0) { //no more data, reached beginning
 			document.getElementById("prvBtn").style.display="none";
 			document.getElementById("prvLabel").style.display="none";
 			document.getElementById("nxtBtn").style.display="block";
 			document.getElementById("nxtLabel").style.display="block";
-			
+		}
+		else {
+			document.getElementById("nxtBtn").style.display="block";
+			document.getElementById("nxtLabel").style.display="block";
+			document.getElementById("prvBtn").style.display="block";
+			document.getElementById("prvLabel").style.display="block";			
 		}
 	}
 	
