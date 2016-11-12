@@ -1,6 +1,6 @@
 var margin = {top: 10, right: 300, bottom: 20, left: 300},
-    width = 960 - margin.right - margin.left,
-    height = 600 - margin.top - margin.bottom;
+    width = 1300 - margin.right - margin.left,
+    height = 700 - margin.top - margin.bottom;
 
 var i = 0,
     duration = 750,
@@ -19,8 +19,11 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-d3.json("data.json", function(error, commonData) {
-  if (error) throw error;
+// d3.json("data.json", function(error, commonData) {
+  // console.log({{common_data}});
+// var commonData = {{common_data|tojson}};
+// var jsonData = data.friends.data;
+  // if (error) throw error;
 
 
   root = commonData;
@@ -37,7 +40,7 @@ d3.json("data.json", function(error, commonData) {
 
   root.children.forEach(collapse);
   update(root);
-});
+// });
 
 d3.select(self.frameElement).style("height", "800px");
 
@@ -78,7 +81,7 @@ var node = svg.selectAll("g.node")
       .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
   nodeUpdate.select("circle")
-      .attr("r", 20)
+      .attr("r", 10)
       .style("fill", function(d) { return d._children ? "lightsteelblue" : "#bbb"; });
 
   nodeUpdate.select("text")

@@ -62,6 +62,20 @@ var jsonData = data.friends.data;
 															})
 								.attr("cy", 400)
 								.attr("r", radius)
+								.on("click", function(d) { 
+									console.log(d.id); 
+									// document.getElementById("friend_id").value = d.id;
+									loadPage("/got_friend/" + data.id + "-" + d.id);
+									// document.getElementById("friend_id").style.display="block";
+								})
+								.on("mouseover", function(d) { 
+									d3.select(this).style("fill", "#1f628d");
+									d3.select(this).style("stroke-width", "4px");
+								 })
+								.on("mouseout", function(d) { 
+									d3.select(this).style("fill", "#ccc"); 
+									d3.select(this).style("stroke-width", "2px");
+								});
 								;
 
 		var friends_name = userContainer.append("text")
@@ -191,10 +205,14 @@ var jsonData = data.friends.data;
 		}
 	}
 	
-
+	function loadPage(page){
+		window.location.assign(page);
+	}
 
 
 
 </script>
-
+<!-- <form action="/got_friend" method = "POST">
+<input type = "text" id = "friend_id" name = "friend_box" style = "display: block"/>
+</form> -->
 </body>
