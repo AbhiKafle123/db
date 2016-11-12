@@ -14,14 +14,15 @@
 		}
 
 		text {
-		  font: 10px sans-serif;
+		  font: 12px sans-serif;
 		  pointer-events: none;
 		  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
 		}
 
-		.button rect {
+		rect {
 		  stroke: #1f628d;
 		  stroke-width: 2px;
+		  fill: #ccc;
 		}
 
 	</style>
@@ -35,11 +36,11 @@ var width = window.innerWidth, height = window.innerHeight;
 
 var iterator = 0;
 
-
 var container = d3.select("body")
 				.append("svg")
 				.attr("width", 7000)
-				.attr("height", height);
+				.attr("height", height)
+				;
 
 
 
@@ -49,51 +50,83 @@ var jsonData = data.friends.data;
 
 
 	function show_friends(slicedData) {
-		var circle = container.selectAll("circle")
+
+		var userContainer = container.selectAll("g")
 								.data(slicedData)
 								.enter()
-								.append("circle");
+								.append("g")
+								;
 
-		var circleAttributes = circle
+		var circles = userContainer.append("circle")
 								.attr("cx", function(d, i) { return i*150 + 100;
-									// var x = i*100 + 100; 
-									// 							if (x > width) {return x - 7000;}
-									// 							else
-									// 								return x;
 															})
-								.attr("cy", function(d, i) {
-									return 250;
-									// var x = i*100 + 100;
-									// if (x > width) { return 500; }
-									// else
-									// 	return 250;
-								})
-								.attr("r", radius);
+								.attr("cy", 400)
+								.attr("r", radius)
+								;
 
-
-		var friends_name = container.selectAll("text")
-							.data(slicedData)
-							.enter()
-							.append("text")
+		var friends_name = userContainer.append("text")
 							.attr("x", function(d, i) { return i * 150 + 100;  })
-							.attr("y", 250 + radius + 15)
+							.attr("y", 400 + radius + 15)
 							.text(function(d) {  return d.name; })
 							.attr("text-anchor", "middle")
 							;
 
-		var name = container.append("text")
+		var mainGroup = container.append("g");
+
+		var name = mainGroup.append("text")
 						.attr("x", width/2)
 						.attr("y", 100 + radius*2 + 15)
 						.text(data.name)
-						.attr("fill","red")
+						.attr("fill","blue")
 						.attr("text-anchor", "middle")
+						.style("font-size", "14px")
 						;
 
-		var mainCircle = container.append("circle")
+		var mainCircle = mainGroup.append("circle")
 						.attr("cx", width/2)
 						.attr("cy", 100)
 						.attr("r", radius * 2);
 
+		var nextButtonGroup = container.append("g");
+
+		var nextBtn = nextButtonGroup.append("rect")
+						.attr("x", width - 80)
+						.attr("y", 400)
+						.attr("width", 40)
+						.attr("height", 20)
+						// .attr("fill", "blue")
+						.attr("id","nxtBtn")
+						.on("click", function() { nextClicked(); })
+						.on("mouseover", function(d) { d3.select(this).style("fill", "#1f628d"); })
+						.on("mouseout", function(d) { d3.select(this).style("fill", "#ccc"); });
+
+		var nextBtnLabel = nextButtonGroup
+							.append("text")
+							.text("Next")
+							.attr("id", "nxtLabel")
+							.attr("text-anchor", "middle")
+							.attr("x", width - 80 + 20)
+							.attr("y", 400 + 15);
+
+		var prevButtonGroup = container.append("g");
+
+		var prevBtn = prevButtonGroup.append("rect")
+						.attr("x", 5)
+						.attr("y", 400)
+						.attr("width", 40)
+						.attr("height", 20)
+						.attr("id","prvBtn")
+						.on("click", function() { prevClicked(); })
+						.on("mouseover", function(d) { d3.select(this).style("fill", "#1f628d"); })
+						.on("mouseout", function(d) { d3.select(this).style("fill", "#ccc"); });
+
+		var prevBtnLabel = prevButtonGroup
+							.append("text")
+							.text("Prev")
+							.attr("id", "prvLabel")
+							.attr("text-anchor", "middle")
+							.attr("x", 25)
+							.attr("y", 400 + 15);
 
 	}
 
@@ -103,54 +136,58 @@ var jsonData = data.friends.data;
 
 	slicedData = jsonData.slice(iterator * 8, (iterator+1) *8);
 		
-	// 	// console.log(slicedData);
+	show_friends(slicedData);	
 
-	// 	// svg.selectAll("*").remove();
-	// 	d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
-		show_friends(slicedData);	
-	// }
+	if (iterator == 0) {
+		document.getElementById("prvBtn").style.display="none";
+		document.getElementById("prvLabel").style.display="none";
+	}
+	if (iterator == iterations - 1) {
+		document.getElementById("nxtBtn").style.display="none";
+		document.getElementById("nxtLabel").style.display="none";
+	}
 
 	window.nextClicked = function (){
-		
+		iterator++;
 		console.log(iterator);
-		if (iterator < iterations) {
-			// nxtBtn.disabled = true;
-			iterator++;
-			console.log("2 clicked");
-			// nxtBtn.disabled = false;	
-			slicedData = jsonData.slice(iterator * 8, (iterator + 1) * 8);
-			d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
-			show_friends(slicedData);
-			// iterator++;
-			document.getElementById("nxtBtn").style.display="block";
+		console.log("2 clicked");
+		slicedData = jsonData.slice(iterator * 8, (iterator + 1) * 8);
+		d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
+		show_friends(slicedData);
+
+		if (iterator == iterations - 1) { // no more data, reached end
+			document.getElementById("nxtBtn").style.display="none";
+			document.getElementById("nxtLabel").style.display="none";
 			document.getElementById("prvBtn").style.display="block";
+			document.getElementById("prvLabel").style.display="block";
 		}
 		else {
-			document.getElementById("nxtBtn").style.display="none";
+			document.getElementById("nxtBtn").style.display="block";
+			document.getElementById("nxtLabel").style.display="block";
 			document.getElementById("prvBtn").style.display="block";
-			
+			document.getElementById("prvLabel").style.display="block";
 		}
 	}
 
 	window.prevClicked = function (){
-		
+		iterator--;
+		console.log("2 clicked");
+		slicedData = jsonData.slice(iterator * 8, (iterator + 1) * 8);
+		d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
+		show_friends(slicedData);
 		console.log(iterator);
-		if (iterator >= 0) {
-			// nxtBtn.disabled = true;
-			iterator--;
-			console.log("2 clicked");
-			// nxtBtn.disabled = false;	
-			slicedData = jsonData.slice(iterator * 8, (iterator + 1) * 8);
-			d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
-			show_friends(slicedData);
-			// iterator++;
-			document.getElementById("prvBtn").style.display="block";
+
+		if (iterator == 0) { //no more data, reached beginning
+			document.getElementById("prvBtn").style.display="none";
+			document.getElementById("prvLabel").style.display="none";
 			document.getElementById("nxtBtn").style.display="block";
+			document.getElementById("nxtLabel").style.display="block";
 		}
 		else {
-			document.getElementById("prvBtn").style.display="none";
 			document.getElementById("nxtBtn").style.display="block";
-			
+			document.getElementById("nxtLabel").style.display="block";
+			document.getElementById("prvBtn").style.display="block";
+			document.getElementById("prvLabel").style.display="block";			
 		}
 	}
 	
@@ -160,7 +197,4 @@ var jsonData = data.friends.data;
 
 </script>
 
- 
-  <button id = "prvBtn" onclick="prevClicked()">Previous</button>
-  <button id = "nxtBtn" onclick="nextClicked()">Next</button>
 </body>
