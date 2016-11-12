@@ -1,6 +1,4 @@
-#!/usr/bin/python
-#Asks for permission and prints name/id
-
+#! /usr/bin/python
 from flask import Flask, redirect, url_for, session, request
 from flask_oauth import OAuth
 
@@ -23,7 +21,7 @@ facebook = oauth.remote_app('facebook',
     authorize_url='https://www.facebook.com/dialog/oauth',
     consumer_key=FACEBOOK_APP_ID,
     consumer_secret=FACEBOOK_APP_SECRET,
-    request_token_params={'scope': 'email'}
+    request_token_params={'scope': 'user_friends, user_likes, user_location, user_tagged_places, user_photos'}
 )
 
 
@@ -49,13 +47,14 @@ def facebook_authorized(resp):
         )
     session['oauth_token'] = (resp['access_token'], '')
     me = facebook.get('/me')
-    return 'Logged in as id=%s name=%s redirect=%s' % \
-        (me.data['id'], me.data['name'], request.args.get('next'))
+    return 'Logged in as id=%s name=%s redirect=%s session token=%s' % \
+        (me.data['id'], me.data['name'], resp['access_token'], request.args.get('next'))
 
 
 @facebook.tokengetter
 def get_facebook_oauth_token():
     return session.get('oauth_token')
+    print session.get('oauth_token')
 
 
 if __name__ == '__main__':
