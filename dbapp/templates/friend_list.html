@@ -101,11 +101,14 @@ function show_friends(slicedData) {
 										loadPage("/got_friend/" + data.id + "-" + d.id);
 									})
 									.on("mouseover", function(d) { 
-										d3.select(this).style("fill", "#1f628d");
+										// d3.select(this).style("fill", "#1f628d");
+										d3.select(this).style("fill", "url(#friendsProfileImage)");
+										d3.select(this).style("fill-opacity", 0.5);
 										d3.select(this).style("stroke-width", "4px");
 									 })
 									.on("mouseout", function(d) { 
-										d3.select(this).style("fill", "#ccc"); 
+										d3.select(this).style("fill", "url(#friendsProfileImage)"); 
+										d3.select(this).style("fill-opacity", 1);
 										d3.select(this).style("stroke-width", "2px");
 									});
 									

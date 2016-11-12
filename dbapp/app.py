@@ -153,7 +153,7 @@ def get_friend_id(ids):
     # 
     common_data = getJsonData("templates/data.json")
     # print common_data
-    return render_template("index.html",template_folder='templates', common_data = common_data, user_data = user_data, friend_data = friend_data)
+    return render_template("output.html",template_folder='templates', common_data = common_data, user_data = user_data, friend_data = friend_data)
 
     # return friend_id
 
