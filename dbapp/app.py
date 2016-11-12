@@ -4,6 +4,7 @@ from flask_oauth import OAuth
 import os
 import requests
 import json
+from flask import jsonify
 from pymongo import MongoClient
 
 
@@ -41,7 +42,7 @@ facebook = oauth.remote_app('facebook',
 
 
 @app.route("/")
-def main():
+def main():     
     # jsondata = getJsonData()
     # print (type(jsondata))
     return render_template("login.html",template_folder='templates')
@@ -50,6 +51,18 @@ def main():
 @app.route('/signup')
 def index():
     return redirect(url_for('login'))
+
+
+def getJsonData(filename):
+    data_file = open(filename)   
+    data = json.load(data_file)
+    return data
+
+
+@app.route('/friends')
+def friendsList():
+    friendsData = getJsonData("templates/friends_data.json")
+    return render_template("friend_list.html",template_folder='templates',friends_data = friendsData)
 
 
 @app.route('/login')

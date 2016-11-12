@@ -31,26 +31,9 @@
 
 var radius = 20;
 
-// console.log(window.innerWidthrHeight);
-
 var width = window.innerWidth, height = window.innerHeight;
 
 var iterator = 0;
-// var slicedData1 = 
-// 				{
-// 					id: 30,
-// 					name: "Midusha Shrestha",
-// 					friends: [{
-// 						id: 100,
-// 						name: "MS friend"
-// 					},
-// 					{
-// 						id: 200,
-// 						name: "Common friend"
-// 					}
-// 					]
-// 				}
-// 				;
 
 
 var container = d3.select("body")
@@ -59,11 +42,11 @@ var container = d3.select("body")
 				.attr("height", height);
 
 
-d3.json("friends_data.json", function(data) {
+
+var data = {{friends_data|tojson}};
+var jsonData = data.friends.data;
 
 
-	var jsonData = data.friends.data;
-	// console.log(slicedData);
 
 	function show_friends(slicedData) {
 		var circle = container.selectAll("circle")
@@ -117,8 +100,6 @@ d3.json("friends_data.json", function(data) {
 	
 
 	var iterations = Math.ceil(jsonData.length / 8);
-	// var iterations = Math.ceil(4 / 8);
-	// for (var i = 0; i < 2; i++) {
 
 	slicedData = jsonData.slice(iterator * 8, (iterator+1) *8);
 		
@@ -174,7 +155,7 @@ d3.json("friends_data.json", function(data) {
 	}
 	
 
-});
+
 
 
 </script>
