@@ -139,7 +139,23 @@ def insertintodb():
     friends = db.friends.insert(friends_json)
     likes = db.likes.insert(likes_json)
     user_account = db.users.insert(account_response)
-    
+
+@app.route('/got_friend/<ids>')
+def get_friend_id(ids):
+    user_id, friend_id = ids.split('-')
+    print user_id, friend_id
+    user_data = db.users.find_one({"id": user_id}, {"_id": 0})
+    friend_data = db.users.find_one({"id": friend_id}, {"_id": 0})
+    # print type(user_data)
+    # print friend_data
+    # code to get commonalities between user_id and friend_id goes here
+    # 
+    # 
+    common_data = getJsonData("templates/data.json")
+    # print common_data
+    return render_template("index.html",template_folder='templates', common_data = common_data, user_data = user_data, friend_data = friend_data)
+
+    # return friend_id
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

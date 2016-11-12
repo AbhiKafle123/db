@@ -1,229 +1,246 @@
-			<!DOCTYPE html>
-			<html lang="en">
-			  <head>
-			    <meta charset="utf-8">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
 
-				<title> Practice</title>
-				<script src ="http://d3js.org/d3.v3.min.js"></script>
-				<style type="text/css">
-					
-					circle {
-					  fill: #ccc;
-					  stroke: #333;
-					  stroke-width: 2px;
-					}
+	<title> Practice</title>
+	<script src ="http://d3js.org/d3.v3.min.js"></script>
+	<style type="text/css">
+		
+		circle {
+		  fill: #ccc;
+		  stroke: #333;
+		  stroke-width: 2px;
+		}
 
-					text {
-					  /*font: 12px sans-serif;*/
-					  pointer-events: none;
-					  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
-					}
+		text {
+		  /*font: 12px sans-serif;*/
+		  pointer-events: none;
+		  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+		}
 
-					rect {
-					  stroke: #1f628d;
-					  stroke-width: 2px;
-					  fill: #ccc;
-					}
+		rect {
+		  stroke: #1f628d;
+		  stroke-width: 2px;
+		  fill: #ccc;
+		}
 
-				</style>
-			</head>
-			<body>
-			<script type="text/javascript">
+	</style>
+</head>
+<body>
+<script type="text/javascript">
 
-			var radius = 40;
+var radius = 40;
 
-			var width = window.innerWidth, height = window.innerHeight;
+var width = window.innerWidth, height = window.innerHeight;
 
-			var iterator = 0;
-
-
-			var data = {{friends_data|tojson}};
-			var jsonData = data.friends.data;
-
-			var container = d3.select("body")
-							.append("svg")
-							.attr("width", 7000)
-							.attr("height", height)
-							;
-
-			function show_friends(slicedData) {
+var iterator = 0;
 
 
-			function profImageurl(id){
+var data = {{friends_data|tojson}};
+var jsonData = data.friends.data;
+
+var container = d3.select("body")
+				.append("svg")
+				.attr("width", 7000)
+				.attr("height", height)
+				;
+
+
+
+function show_friends(slicedData) {
+
+	function loadPage(page){
+		window.location.assign(page);
+	}
+
+
+	function profImageurl(id){
 			return "http://graph.facebook.com/" + id + "/picture?type=large";
-			}
-			
-
-			var userProfileImage = container.append("defs")
-			                      .append("pattern")
-			                      .attr("id", "userProfileImage")
-			                      .attr("height", 1)
-			                      .attr("width", 1)
-			                      .append("image")
-			                      .attr("height", 40*1.5 *2)
-			                      .attr("width", 40 *1.5*2)
-			                      .attr("xlink:href", profImageurl(data.id))
+	}
 
 
-					var userContainer = container.selectAll("g")
-											.data(slicedData)
-											.enter()
-											.append("g")
-											;
+	var userProfileImage = container.append("defs")
+	                      .append("pattern")
+	                      .attr("id", "userProfileImage")
+	                      .attr("height", 1)
+	                      .attr("width", 1)
+	                      .append("image")
+	                      .attr("height", 40*1.5 *2)
+	                      .attr("width", 40 *1.5*2)
+	                      .attr("xlink:href", profImageurl(data.id))
 
 
-					var friendsProfileImage = container.append("defs")
-			                      .append("pattern")
-			                      .attr("id", "friendsProfileImage")
-			                      .attr("height", 1)
-			                      .attr("width", 1)
-			                      .append("image")
-			                      .attr("height", 40 *1.4)
-			                      .attr("width", 40*2)
-			                      .attr("xlink:href","static/img/friend.jpeg")
-
-
-
-					var circles = userContainer.append("circle")
-											.attr("cx", function(d, i) {return i*200 + 250;})
-											.attr("cy", 350)
-											.attr("r", radius)
-											.attr("stroke", "blue")
-		                  					.attr("fill","transparent")
-		                  					.style("fill", "url(#friendsProfileImage)")
-											;
-
-					var friends_name = userContainer.append("text")
-										.attr("x", function(d, i) { return  i*200 + 250; })
-										.attr("y", 350 + radius + 15)
-										.text(function(d) {  return d.name; })
-										.attr("text-anchor", "middle")
-										;
-
-					var mainGroup = container.append("g");
-
-					var name = mainGroup.append("text")
-									.attr("x", width/2)
-									.attr("y", 100 + radius*1.5 + 15)
-									.text(data.name)
-									.attr("fill","blue")
-									.attr("text-anchor", "middle")
-									// .style("font-size", "14px")
+			var userContainer = container.selectAll("g")
+									.data(slicedData)
+									.enter()
+									.append("g")
 									;
 
-					var mainCircle = mainGroup.append("circle")
-									.attr("cx", width/2)
-									.attr("cy", 100)
-									.attr("r", radius * 1.5)
-									// ;
+
+			var friendsProfileImage = container.append("defs")
+	                      .append("pattern")
+	                      .attr("id", "friendsProfileImage")
+	                      .attr("height", 1)
+	                      .attr("width", 1)
+	                      .append("image")
+	                      .attr("height", 40 *1.4)
+	                      .attr("width", 40*2)
+	                      .attr("xlink:href","static/img/friend.jpeg")
+
+
+
+			var circles = userContainer.append("circle")
+									.attr("cx", function(d, i) {return i*200 + 250;})
+									.attr("cy", 350)
+									.attr("r", radius)
 									.attr("stroke", "blue")
-		                  			.attr("fill","transparent")
-		                  			.style("fill", "url(#userProfileImage)")
-		                  			;
+	              					.attr("fill","transparent")
+	              					.style("fill", "url(#friendsProfileImage)")
+	              					.on("click", function(d) { 
+										loadPage("/got_friend/" + data.id + "-" + d.id);
+									})
+									.on("mouseover", function(d) { 
+										d3.select(this).style("fill", "#1f628d");
+										d3.select(this).style("stroke-width", "4px");
+									 })
+									.on("mouseout", function(d) { 
+										d3.select(this).style("fill", "#ccc"); 
+										d3.select(this).style("stroke-width", "2px");
+									});
+									
 
-					var nextButtonGroup = container.append("g");
+			var friends_name = userContainer.append("text")
+								.attr("x", function(d, i) { return  i*200 + 250; })
+								.attr("y", 350 + radius + 15)
+								.text(function(d) {  return d.name; })
+								.attr("text-anchor", "middle")
+								;
 
-					var nextBtn = nextButtonGroup.append("rect")
-									.attr("x", width - 297)
-									.attr("y", 500)
-									.attr("width", 60)
-									.attr("height", 30)
-									.attr("id","nxtBtn")
-									.on("click", function() { nextClicked(); })
-									.on("mouseover", function(d) { d3.select(this).style("fill", "#1f628d"); })
-									.on("mouseout", function(d) { d3.select(this).style("fill", "#ccc"); });
+			var mainGroup = container.append("g");
 
-					var nextBtnLabel = nextButtonGroup
-										.append("text")
-										.text("Next")
-										.attr("id", "nxtLabel")
-										.attr("text-anchor", "middle")
-										.attr("x", width - 297 + 30)
-										.attr("y", 500 + 20);
+			var name = mainGroup.append("text")
+							.attr("x", width/2)
+							.attr("y", 100 + radius*1.5 + 15)
+							.text(data.name)
+							.attr("fill","blue")
+							.attr("text-anchor", "middle")
+							// .style("font-size", "14px")
+							;
 
-					var prevButtonGroup = container.append("g");
+			var mainCircle = mainGroup.append("circle")
+							.attr("cx", width/2)
+							.attr("cy", 100)
+							.attr("r", radius * 1.5)
+							// ;
+							.attr("stroke", "blue")
+	              			.attr("fill","transparent")
+	              			.style("fill", "url(#userProfileImage)")
+	              			;
 
-					var prevBtn = prevButtonGroup.append("rect")
-									.attr("x", 222)
-									.attr("y", 500)
-									.attr("width", 60)
-									.attr("height", 30)
-									.attr("id","prvBtn")
-									.on("click", function() { prevClicked(); })
-									.on("mouseover", function(d) { d3.select(this).style("fill", "#1f628d"); })
-									.on("mouseout", function(d) { d3.select(this).style("fill", "#ccc"); });
+			var nextButtonGroup = container.append("g");
 
-					var prevBtnLabel = prevButtonGroup
-										.append("text")
-										.text("Prev")
-										.attr("id", "prvLabel")
-										.attr("text-anchor", "middle")
-										.attr("x", 222+30)
-										.attr("y", 500+20);
+			var nextBtn = nextButtonGroup.append("rect")
+							.attr("x", width - 297)
+							.attr("y", 500)
+							.attr("width", 60)
+							.attr("height", 30)
+							.attr("id","nxtBtn")
+							.on("click", function() { nextClicked(); })
+							.on("mouseover", function(d) { d3.select(this).style("fill", "#1f628d"); })
+							.on("mouseout", function(d) { d3.select(this).style("fill", "#ccc"); });
 
-				}
+			var nextBtnLabel = nextButtonGroup
+								.append("text")
+								.text("Next")
+								.attr("id", "nxtLabel")
+								.attr("text-anchor", "middle")
+								.attr("x", width - 297 + 30)
+								.attr("y", 500 + 20);
 
-				
+			var prevButtonGroup = container.append("g");
 
-				var iterations = Math.ceil(jsonData.length / 5);
+			var prevBtn = prevButtonGroup.append("rect")
+							.attr("x", 222)
+							.attr("y", 500)
+							.attr("width", 60)
+							.attr("height", 30)
+							.attr("id","prvBtn")
+							.on("click", function() { prevClicked(); })
+							.on("mouseover", function(d) { d3.select(this).style("fill", "#1f628d"); })
+							.on("mouseout", function(d) { d3.select(this).style("fill", "#ccc"); });
 
-				slicedData = jsonData.slice(iterator * 5, (iterator+1) *5);
-					
-				show_friends(slicedData);	
+			var prevBtnLabel = prevButtonGroup
+								.append("text")
+								.text("Prev")
+								.attr("id", "prvLabel")
+								.attr("text-anchor", "middle")
+								.attr("x", 222+30)
+								.attr("y", 500+20);
 
-				if (iterator == 0) {
-					document.getElementById("prvBtn").style.display="none";
-					document.getElementById("prvLabel").style.display="none";
-				}
-				if (iterator == iterations - 1) {
-					document.getElementById("nxtBtn").style.display="none";
-					document.getElementById("nxtLabel").style.display="none";
-				}
+	}
 
-				window.nextClicked = function (){
-					iterator++;
-					console.log(iterator);
-					console.log("2 clicked");
-					slicedData = jsonData.slice(iterator * 5, (iterator + 1) * 5);
-					d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
-					show_friends(slicedData);
+	
 
-					if (iterator == iterations - 1) { // no more data, reached end
-						document.getElementById("nxtBtn").style.display="none";
-						document.getElementById("nxtLabel").style.display="none";
-						document.getElementById("prvBtn").style.display="block";
-						document.getElementById("prvLabel").style.display="block";
-					}
-					else {
-						document.getElementById("nxtBtn").style.display="block";
-						document.getElementById("nxtLabel").style.display="block";
-						document.getElementById("prvBtn").style.display="block";
-						document.getElementById("prvLabel").style.display="block";
-					}
-				}
+	var iterations = Math.ceil(jsonData.length / 5);
 
-				window.prevClicked = function (){
-					iterator--;
-					console.log("2 clicked");
-					slicedData = jsonData.slice(iterator * 5, (iterator + 1) * 5);
-					d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
-					show_friends(slicedData);
-					console.log(iterator);
+	slicedData = jsonData.slice(iterator * 5, (iterator+1) *5);
+		
+	show_friends(slicedData);	
 
-					if (iterator == 0) { //no more data, reached beginning
-						document.getElementById("prvBtn").style.display="none";
-						document.getElementById("prvLabel").style.display="none";
-						document.getElementById("nxtBtn").style.display="block";
-						document.getElementById("nxtLabel").style.display="block";
-					}
-					else {
-						document.getElementById("nxtBtn").style.display="block";
-						document.getElementById("nxtLabel").style.display="block";
-						document.getElementById("prvBtn").style.display="block";
-						document.getElementById("prvLabel").style.display="block";			
-					}
-				}
+	if (iterator == 0) {
+		document.getElementById("prvBtn").style.display="none";
+		document.getElementById("prvLabel").style.display="none";
+	}
+	if (iterator == iterations - 1) {
+		document.getElementById("nxtBtn").style.display="none";
+		document.getElementById("nxtLabel").style.display="none";
+	}
 
-			</script>
+	window.nextClicked = function (){
+		iterator++;
+		console.log(iterator);
+		console.log("2 clicked");
+		slicedData = jsonData.slice(iterator * 5, (iterator + 1) * 5);
+		d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
+		show_friends(slicedData);
 
-			</body>
+		if (iterator == iterations - 1) { // no more data, reached end
+			document.getElementById("nxtBtn").style.display="none";
+			document.getElementById("nxtLabel").style.display="none";
+			document.getElementById("prvBtn").style.display="block";
+			document.getElementById("prvLabel").style.display="block";
+		}
+		else {
+			document.getElementById("nxtBtn").style.display="block";
+			document.getElementById("nxtLabel").style.display="block";
+			document.getElementById("prvBtn").style.display="block";
+			document.getElementById("prvLabel").style.display="block";
+		}
+	}
+
+	window.prevClicked = function (){
+		iterator--;
+		console.log("2 clicked");
+		slicedData = jsonData.slice(iterator * 5, (iterator + 1) * 5);
+		d3.selectAll("svg > *").remove(); // remove previous nodes before adding new ones
+		show_friends(slicedData);
+		console.log(iterator);
+
+		if (iterator == 0) { //no more data, reached beginning
+			document.getElementById("prvBtn").style.display="none";
+			document.getElementById("prvLabel").style.display="none";
+			document.getElementById("nxtBtn").style.display="block";
+			document.getElementById("nxtLabel").style.display="block";
+		}
+		else {
+			document.getElementById("nxtBtn").style.display="block";
+			document.getElementById("nxtLabel").style.display="block";
+			document.getElementById("prvBtn").style.display="block";
+			document.getElementById("prvLabel").style.display="block";			
+		}
+	}
+
+</script>
+
+</body>
