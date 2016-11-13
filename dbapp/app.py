@@ -77,11 +77,9 @@ def facebook_authorized(resp):
         (me.data['id'], me.data['name'], resp['access_token'], request.args.get('next'))
 
 
-
 @facebook.tokengetter
 def get_facebook_oauth_token():
     return session.get('oauth_token')
-
 
 
 def getAllData(response, page = True):
@@ -100,7 +98,7 @@ def getAllData(response, page = True):
 def getResponse():
     response = os.system('wget "https://graph.facebook.com/v2.8/me?fields=id,name,likes{category,name,fan_count},friends,tagged_places&access_token=%s" -O all3.json'%(access_token) )
     response = requests.get('https://graph.facebook.com/v2.8/me?fields=id,name,likes{category,name,fan_count},friends,tagged_places&access_token=%s' % (access_token))
-    
+
     global account_response
     account_response = requests.get('https://graph.facebook.com/v2.8/me/?access_token=%s' % (access_token)).json()
     likes_response = requests.get('https://graph.facebook.com/v2.8/me/likes?fields=category,name&limit=100&access_token=%s' % (access_token)).json()
@@ -111,14 +109,22 @@ def getResponse():
     friends = getAllData(friends_response, False)
     places = getAllData(places_response, False)
     user_id = account_response['id']
+    me = facebook.get('/me')
 
-    global places_json 
-    places_json = {"_id":user_id, "places":places}
-    global friends_json 
-    friends_json = {"_id":user_id, "friends":friends}
+    global places_json
+    places_json = {"_id": user_id, "places": places}
+    global friends_json
+    friends_json = {"_id": user_id, "friends": friends}
     global likes_json
-    likes_json = {"_id":user_id, "likes":likes}
+    likes_json = {"_id": user_id, "likes": likes}
     insertintodb()
+    friends = db.users.find()
+    print friends
+    friends = list(friends)
+    print()
+    friends = [{"_id":me.data['id'],"name":me.data['name'],"data":friends}]
+    print json.dumps(friends)
+
 
 
 def insertintodb():
@@ -129,7 +135,37 @@ def insertintodb():
         user_account = db.users.insert({"_id" : account_response['id'],"name" : account_response['name']})
     except:
         pass
+
+
+@app.route('/')
+@app.route('/show')
+def show():
+
+    me = facebook.get('/me')
+    result = db.likes.aggregate([{"$match":{"_id":{"$in":[me.data['id'],"1006051672784344"]}}},{"$group":{"_id":0,"set1":{"$first":"$likes"},"set2":{"$last":"$likes"}}},{"$project":{"commonToBoth":{"$setIntersection":["$set1","$set2"]},"_id":0}}])
+    likes = list(result)
+    result = db.places.aggregate([{"$match":{"_id":{"$in":[me.data['id'],"1006051672784344"]}}},{"$group":{"_id":0,"set1":{"$first":"$places.place.name"},"set2":{"$last":"$places.place.name"}}},{"$project":{"commonToBoth":{"$setIntersection":["$set1","$set2"]},"_id":0}}])
+    places = list(result)
+    result = db.friends.aggregate([{"$match":{"_id":{"$in":[me.data['id'],"1006051672784344"]}}},{"$group":{"_id":0,"set1":{"$first":"$friends.name"},"set2":{"$last":"$friends.name"}}},{"$project":{"commonToBoth":{"$setIntersection":["$set1","$set2"]},"_id":0}}])
+    friends = list(result)
+
+    likes = likes[0]['commonToBoth']
+    categories = set([l['category'] for l in likes])
+    result_likes = [{"name":"Likes","children":[{"name":c,"children":[{"name":l["name"]} for l in likes if l['category'] == c]} for c in categories]}]
+
+    places = places[0]['commonToBoth']
+    result_places = [{"name":"Places Visited","children":[{"name":p} for p in places]}]
+
+    friends = friends[0]['commonToBoth']
+    result_friends = [{"name":"Friends","children":[{"name":f} for f in friends]}]
+
     
+    all_json ={"name":"Commanalities", "children": result_likes + result_places + result_friends}
+   # friends = db.users.find()
+   # friends = {"id":me.data['id'],"name":me.data['name'],"data":{list(friends)}}
+   # print json_dumps(friends)
+    print json.dumps(all_json)
+    return "aalu"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
