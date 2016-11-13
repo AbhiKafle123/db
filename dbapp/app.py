@@ -85,7 +85,7 @@ def facebook_authorized(resp):
     session['oauth_token'] = (resp['access_token'], '')
     me = facebook.get('/me')
     access_token = str(resp['access_token'])
-    friends_data = getResponse()
+    friendsData = getResponse()
     # return 'Logged in as id=%s name=%s redirect=%s session token=%s' % \
     #     (me.data['id'], me.data['name'], resp['access_token'], request.args.get('next'))
     return render_template("friend_list.html",template_folder='templates',friends_data = friendsData)
@@ -136,9 +136,9 @@ def getResponse():
     print friends
     friends = list(friends)
     print()
-    friends = [{"_id":me.data['id'],"name":me.data['name'],"data":friends}]
-    return json.dumps(friends)
-
+    friends = {"id":me.data['id'],"name":me.data['name'],"data":friends}
+   # return json.dumps(friends)
+    return friends
 
 
 def insertintodb():
@@ -194,7 +194,7 @@ def show(friend_id):
    # friends = db.users.find()
    # friends = {"id":me.data['id'],"name":me.data['name'],"data":{list(friends)}}
    # print json_dumps(friends)
-    return json.dumps(all_json)
+    return all_json
     # return "aalu"
 
 
