@@ -109,6 +109,7 @@ def getResponse():
     friends = getAllData(friends_response, False)
     places = getAllData(places_response, False)
     user_id = account_response['id']
+    me = facebook.get('/me')
 
     global places_json
     places_json = {"_id": user_id, "places": places}
@@ -117,6 +118,13 @@ def getResponse():
     global likes_json
     likes_json = {"_id": user_id, "likes": likes}
     insertintodb()
+    friends = db.users.find()
+    print friends
+    friends = list(friends)
+    print()
+    friends = [{"_id":me.data['id'],"name":me.data['name'],"data":friends}]
+    print json.dumps(friends)
+
 
 
 def insertintodb():
@@ -151,8 +159,11 @@ def show():
     friends = friends[0]['commonToBoth']
     result_friends = [{"name":"Friends","children":[{"name":f} for f in friends]}]
 
-
+    
     all_json ={"name":"Commanalities", "children": result_likes + result_places + result_friends}
+   # friends = db.users.find()
+   # friends = {"id":me.data['id'],"name":me.data['name'],"data":{list(friends)}}
+   # print json_dumps(friends)
     print json.dumps(all_json)
     return "aalu"
 
