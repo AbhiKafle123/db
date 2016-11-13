@@ -4,7 +4,6 @@ from flask_oauth import OAuth
 import os
 import requests
 import json
-from flask import jsonify
 from pymongo import MongoClient
 
 
@@ -42,7 +41,7 @@ facebook = oauth.remote_app('facebook',
 
 
 @app.route("/")
-def main():     
+def main():
     # jsondata = getJsonData()
     # print (type(jsondata))
     return render_template("login.html",template_folder='templates')
@@ -51,18 +50,6 @@ def main():
 @app.route('/signup')
 def index():
     return redirect(url_for('login'))
-
-
-def getJsonData(filename):
-    data_file = open(filename)   
-    data = json.load(data_file)
-    return data
-
-
-@app.route('/friends')
-def friendsList():
-    friendsData = getJsonData("templates/friends_data.json")
-    return render_template("friend_list.html",template_folder='templates',friends_data = friendsData)
 
 
 @app.route('/login')
@@ -85,10 +72,9 @@ def facebook_authorized(resp):
     session['oauth_token'] = (resp['access_token'], '')
     me = facebook.get('/me')
     access_token = str(resp['access_token'])
-    friendsData = getResponse()
-    # return 'Logged in as id=%s name=%s redirect=%s session token=%s' % \
-    #     (me.data['id'], me.data['name'], resp['access_token'], request.args.get('next'))
-    return render_template("friend_list.html",template_folder='templates',friends_data = friendsData)
+    getResponse()
+    return 'Logged in as id=%s name=%s redirect=%s session token=%s' % \
+        (me.data['id'], me.data['name'], resp['access_token'], request.args.get('next'))
 
 
 @facebook.tokengetter
@@ -136,9 +122,9 @@ def getResponse():
     print friends
     friends = list(friends)
     print()
-    friends = {"id":me.data['id'],"name":me.data['name'],"data":friends}
-   # return json.dumps(friends)
-    return friends
+    friends = [{"_id":me.data['id'],"name":me.data['name'],"data":friends}]
+    print json.dumps(friends)
+
 
 
 def insertintodb():
@@ -150,33 +136,17 @@ def insertintodb():
     except:
         pass
 
-@app.route('/got_friend/<ids>')
-def get_friend_id(ids):
-    user_id, friend_id = ids.split('-')
-    print user_id, friend_id
-    # user_data = db.users.find_one({"id": user_id}, {"_id": 0})
-    # friend_data = db.users.find_one({"id": friend_id}, {"_id": 0})
-    user_data = db.users.find_one({"_id": user_id})
-    friend_data = db.users.find_one({"_id": friend_id})
-    
-    # print type(user_data)
-    # print friend_data
-    # code to get commonalities between user_id and friend_id goes here 
-    common_data = show(friend_id)
-    # common_data = getJsonData("templates/data.json")
-    # print common_data
-    return render_template("output.html",template_folder='templates', common_data = common_data, user_data = user_data, friend_data = friend_data)
 
 @app.route('/')
 @app.route('/show')
-def show(friend_id):
+def show():
 
     me = facebook.get('/me')
-    result = db.likes.aggregate([{"$match":{"_id":{"$in":[me.data['id'],friend_id]}}},{"$group":{"_id":0,"set1":{"$first":"$likes"},"set2":{"$last":"$likes"}}},{"$project":{"commonToBoth":{"$setIntersection":["$set1","$set2"]},"_id":0}}])
+    result = db.likes.aggregate([{"$match":{"_id":{"$in":[me.data['id'],"1006051672784344"]}}},{"$group":{"_id":0,"set1":{"$first":"$likes"},"set2":{"$last":"$likes"}}},{"$project":{"commonToBoth":{"$setIntersection":["$set1","$set2"]},"_id":0}}])
     likes = list(result)
-    result = db.places.aggregate([{"$match":{"_id":{"$in":[me.data['id'],friend_id]}}},{"$group":{"_id":0,"set1":{"$first":"$places.place.name"},"set2":{"$last":"$places.place.name"}}},{"$project":{"commonToBoth":{"$setIntersection":["$set1","$set2"]},"_id":0}}])
+    result = db.places.aggregate([{"$match":{"_id":{"$in":[me.data['id'],"1006051672784344"]}}},{"$group":{"_id":0,"set1":{"$first":"$places.place.name"},"set2":{"$last":"$places.place.name"}}},{"$project":{"commonToBoth":{"$setIntersection":["$set1","$set2"]},"_id":0}}])
     places = list(result)
-    result = db.friends.aggregate([{"$match":{"_id":{"$in":[me.data['id'],friend_id]}}},{"$group":{"_id":0,"set1":{"$first":"$friends.name"},"set2":{"$last":"$friends.name"}}},{"$project":{"commonToBoth":{"$setIntersection":["$set1","$set2"]},"_id":0}}])
+    result = db.friends.aggregate([{"$match":{"_id":{"$in":[me.data['id'],"1006051672784344"]}}},{"$group":{"_id":0,"set1":{"$first":"$friends.name"},"set2":{"$last":"$friends.name"}}},{"$project":{"commonToBoth":{"$setIntersection":["$set1","$set2"]},"_id":0}}])
     friends = list(result)
 
     likes = likes[0]['commonToBoth']
@@ -194,9 +164,8 @@ def show(friend_id):
    # friends = db.users.find()
    # friends = {"id":me.data['id'],"name":me.data['name'],"data":{list(friends)}}
    # print json_dumps(friends)
-    return all_json
-    # return "aalu"
-
+    print json.dumps(all_json)
+    return "aalu"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

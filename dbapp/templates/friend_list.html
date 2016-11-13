@@ -38,8 +38,9 @@ var iterator = 0;
 
 
 var data = {{friends_data|tojson}};
-var jsonData = data.friends.data;
-
+console.log(data);
+var jsonData = data.data;
+console.log(jsonData);
 var container = d3.select("body")
 				.append("svg")
 				.attr("width", 7000)
@@ -86,7 +87,7 @@ function show_friends(slicedData) {
 	                      .append("image")
 	                      .attr("height", 40 *1.4)
 	                      .attr("width", 40*2)
-	                      .attr("xlink:href","static/img/friend.jpeg")
+	                      .attr("xlink:href","../static/img/friend.jpeg")
 
 
 
@@ -98,7 +99,7 @@ function show_friends(slicedData) {
 	              					.attr("fill","transparent")
 	              					.style("fill", "url(#friendsProfileImage)")
 	              					.on("click", function(d) { 
-										loadPage("/got_friend/" + data.id + "-" + d.id);
+										loadPage("/got_friend/" + data.id + "-" + d._id);
 									})
 									.on("mouseover", function(d) { 
 										// d3.select(this).style("fill", "#1f628d");
