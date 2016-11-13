@@ -1,15 +1,6 @@
-<meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-8">
-<html>
-<head>
-	<title> Sample</title>
-	<script src ="http://d3js.org/d3.v3.min.js"></script>
-</head>
-<body>
-<script>
-
-var margin = {top: 20, right: 300, bottom: 20, left: 300},
+var margin = {top: 10, right: 300, bottom: 20, left: 300},
     width = 960 - margin.right - margin.left,
-    height = 800 - margin.top - margin.bottom;
+    height = 600 - margin.top - margin.bottom;
 
 var i = 0,
     duration = 750,
@@ -28,15 +19,11 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-
-
-d3.json("data.json", function(error, flare) {
+d3.json("data.json", function(error, commonData) {
   if (error) throw error;
 
 
-
-
-  root = flare;
+  root = commonData;
   root.x0 = height / 2;
   root.y0 = 0;
 
@@ -67,53 +54,6 @@ function update(source) {
 var node = svg.selectAll("g.node")
       .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
-console.log(node[0]);
-
-
-
-// var user1 = elem.enter()
-//         .append("g")
-        // .attr("transform", function(d){return "translate("+d.x+",80)"})
-
-// var usernode = svg.selectAll(".node");
-
-
-var circle1 = svg
-  .append("circle")
-  .attr("cx", 0)
-  .attr("cy", 380)
-  .attr("r",25)
-  .attr("stroke", "blue")
-  .attr("fill","none")
-  .attr("transform", function(d){return "translate(-200,-200)"; });
-
-
-var circle2 = svg
-  .append("circle")
-  .attr("cx", 0)
-  .attr("cy", 380)
-  .attr("r",25)
-  .attr("stroke", "blue")
-  .attr("fill","none")
-  .attr("transform", function(d){return "translate(-200,200)"; });
-
-
-
-
-// var user1name = usernode
-//   .append("text")
-//   .text(function (d) {return "Midusha";})
-//   .attr("font-size","20px")
-//   .attr("text-anchor", "middle");
-
-// user1.append(circle)
-//       .append(user1name)
-
-
-// var user2 = svg.append("circle")
-//   .attr("cx",60)
-//   .attr("cy",60)
-//   .attr("r",25);
 
   // Enter any new nodes at the parent's previous position.
   var nodeEnter = node.enter().append("g")
@@ -202,8 +142,3 @@ function click(d) {
   }
   update(d);
 }
-
-</script>
-	
-</body>
-</html>
