@@ -132,7 +132,8 @@ def getResponse():
     global likes_json
     likes_json = {"_id": user_id, "likes": likes}
     insertintodb()
-    friends = db.users.find()
+ #   friends = db.users.find()
+    friends = db.users.find({"_id": {"$ne": user_id}})
     print friends
     friends = list(friends)
     print()
@@ -190,7 +191,7 @@ def show(friend_id):
     result_friends = [{"name":"Friends","children":[{"name":f} for f in friends]}]
 
     
-    all_json ={"name":"Commanalities", "children": result_likes + result_places + result_friends}
+    all_json ={"name":"Commonalities", "children": result_likes + result_places + result_friends}
    # friends = db.users.find()
    # friends = {"id":me.data['id'],"name":me.data['name'],"data":{list(friends)}}
    # print json_dumps(friends)
